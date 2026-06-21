@@ -9,8 +9,6 @@ const SECTION_IDS = [
   "structural",
   "smart-city",
   "showcase",
-  "lab",
-  "timeline",
   "final",
   "contact",
 ];

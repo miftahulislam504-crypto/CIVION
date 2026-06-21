@@ -7,7 +7,7 @@ import CustomCursor from "@/components/CustomCursor";
 import AudioProvider from "@/components/AudioProvider";
 import AudioToggle from "@/components/AudioToggle";
 import SectionPulseTrigger from "@/components/SectionPulseTrigger";
-import CanvasBackground from "@/scenes/CanvasBackground";
+import WorldScene from "@/scenes/WorldScene";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -69,7 +69,7 @@ export default function RootLayout({
         <AudioProvider>
           <IntroProvider>
             <SmoothScroll>
-              <CanvasBackground />
+              <WorldScene />
               <AudioToggle />
               <SectionPulseTrigger />
               <IntroLoader />

@@ -40,32 +40,17 @@ body {
   }
 }
 
-@keyframes civion-flicker {
-  0% {
-    opacity: 0;
+@keyframes civion-spin {
+  from {
+    transform: rotate(-90deg);
   }
-  4% {
-    opacity: 1;
-  }
-  8% {
-    opacity: 0.2;
-  }
-  12% {
-    opacity: 1;
-  }
-  18% {
-    opacity: 0.4;
-  }
-  24% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 1;
+  to {
+    transform: rotate(270deg);
   }
 }
 
-.animate-civion-flicker {
-  animation: civion-flicker 1.4s ease-out forwards;
+.animate-civion-spin {
+  animation: civion-spin 1.8s linear infinite;
 }
 
 @keyframes civion-wave {

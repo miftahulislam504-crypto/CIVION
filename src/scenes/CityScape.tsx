@@ -1,27 +1,32 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { gsap } from "@/utils/gsap";
-import { generateCity } from "@/scenes/cityBuildings";
+import type { Building } from "@/scenes/cityBuildings";
 import { BuildingGroup } from "@/scenes/BuildingGroup";
 
 /**
- * Procedural skyline for the Hero canvas — see cityBuildings.ts for the
- * shared generator and BuildingGroup.tsx for the per-building composite
+ * Procedural skyline renderer — see cityBuildings.ts for the shared
+ * generator and BuildingGroup.tsx for the per-building composite
  * (parapet / setback / landmark variants). This file only owns the
  * "structures emerge from terrain" rise effect.
+ *
+ * Takes the building layout as a prop (rather than generating its own via
+ * generateCity) so WorldScene can generate ONE array and share it with both
+ * this and the overlay systems (TrafficFlows/DataStreams/EnergyPulses) —
+ * otherwise each would roll its own random layout and the particles
+ * wouldn't line up with the buildings actually on screen.
  */
 export default function CityScape({
+  buildings,
   rise,
   detail = true,
-  count = 64,
 }: {
+  buildings: Building[];
   rise: boolean;
   detail?: boolean;
-  count?: number;
 }) {
-  const buildings = useMemo(() => generateCity(count), [count]);
   const groupRefs = useRef<(THREE.Group | null)[]>([]);
 
   // Stagger each building's composite group up from the ground once the

@@ -9,11 +9,12 @@ import {
 } from "@/shaders/holographicGrid";
 
 /**
- * A flat, glowing, pulsing grid laid on the ground beneath a scene —
- * reused by Hero, Smart City, and Final Cinematic so the "engineering HUD"
- * grid language carries through every 3D scene, not just the 2D sections.
+ * A flat, glowing, pulsing grid laid on the ground beneath the world.
+ * Sized to extend past the farthest point the camera travels (see
+ * WorldCameraRig's final waypoint) so the ground plane never runs out
+ * from under the camera mid-scroll.
  */
-export default function HolographicGrid({ size = 60 }: { size?: number }) {
+export default function HolographicGrid({ size = 220 }: { size?: number }) {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
 
   const uniforms = useMemo(

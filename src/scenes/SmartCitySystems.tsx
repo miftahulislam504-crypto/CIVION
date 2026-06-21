@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import type { Building } from "@/scenes/SmartCityGrid";
+import type { Building } from "@/scenes/cityBuildings";
 
 const CITY_SPAN = 22; // matches the grid's spread, used to wrap traffic lanes
 

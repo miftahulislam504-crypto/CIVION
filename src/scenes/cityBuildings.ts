@@ -1,10 +1,8 @@
 import * as THREE from "three";
 
 /**
- * Shared between CityScape (Hero), SmartCityGrid (Smart City + Final
- * Cinematic, via reuse). Previously each scene duplicated this exact
- * generator — now one source of truth, and one place to add massing
- * variety so all three scenes benefit at once.
+ * Shared building-layout generator, used once by WorldScene and rendered
+ * by CityScape — one source of truth for the whole skyline.
  */
 export type BuildingVariant = "simple" | "setback" | "landmark";
 
