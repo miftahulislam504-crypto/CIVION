@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+:root {
+  /* CIVION color system */
+  --civion-graphite: #0a0a0b;
+  --civion-deep-space: #14161b;
+  --civion-neon-cyan: #2de2e6;
+  --civion-electric-blue: #4d7cfe;
+  --civion-soft-white: #f4f4f2;
+  --civion-warm-orange: #ff7a45;
+}
+
+@theme inline {
+  /* exposes bg-graphite, text-neon-cyan, border-electric-blue, etc. */
+  --color-graphite: var(--civion-graphite);
+  --color-deep-space: var(--civion-deep-space);
+  --color-neon-cyan: var(--civion-neon-cyan);
+  --color-electric-blue: var(--civion-electric-blue);
+  --color-soft-white: var(--civion-soft-white);
+  --color-warm-orange: var(--civion-warm-orange);
+
+  /* exposes font-display, font-body */
+  --font-display: var(--font-space-grotesk);
+  --font-body: var(--font-inter);
+}
+
+html {
+  scroll-behavior: auto; /* Lenis takes over scrolling, native smooth-behavior would conflict */
+}
+
+body {
+  background: var(--civion-graphite);
+  color: var(--civion-soft-white);
+  font-family: var(--font-body);
+}
+
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+}
+
+@keyframes civion-flicker {
+  0% {
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0.2;
+  }
+  12% {
+    opacity: 1;
+  }
+  18% {
+    opacity: 0.4;
+  }
+  24% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-civion-flicker {
+  animation: civion-flicker 1.4s ease-out forwards;
+}
+
+@keyframes civion-wave {
+  0%,
+  100% {
+    height: 20%;
+  }
+  50% {
+    height: 90%;
+  }
+}
+
+.animate-civion-wave {
+  height: 20%;
+  animation: civion-wave 1.2s ease-in-out infinite;
+}
