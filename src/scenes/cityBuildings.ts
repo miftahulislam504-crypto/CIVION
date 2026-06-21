@@ -1,8 +1,19 @@
 import * as THREE from "three";
+import { isNearLandmark } from "@/scenes/projectLandmarks";
 
 /**
  * Shared building-layout generator, used once by WorldScene and rendered
  * by CityScape — one source of truth for the whole skyline.
+ *
+ * Note: the "landmark" BuildingVariant below is an unrelated, older
+ * concept — a random tall spire+beacon building that can appear anywhere
+ * in the procedural grid purely for skyline variety. It has nothing to do
+ * with the 4 fixed-position PROJECT landmarks in projectLandmarks.ts
+ * (CivilOS Structural, etc), which are placed separately and are
+ * clickable. The two happen to share the word "landmark" by coincidence
+ * of having been named at different times — kept as-is here since
+ * BuildingGroup.tsx and other call sites already depend on this variant
+ * name.
  */
 export type BuildingVariant = "simple" | "setback" | "landmark";
 
@@ -30,6 +41,13 @@ export function generateCity(count: number): Building[] {
       const jitterX = (Math.random() - 0.5) * 0.7;
       const jitterZ = (Math.random() - 0.5) * 0.7;
 
+      const posX = (x - gridSize / 2) * spacing + jitterX;
+      const posZ = (z - gridSize / 2) * spacing + jitterZ;
+
+      // Leave a gap where a fixed project landmark stands — its own
+      // dedicated mesh (see ProjectLandmarks.tsx) renders there instead.
+      if (isNearLandmark(posX, posZ)) continue;
+
       const roll = Math.random();
       const variant: BuildingVariant =
         roll < LANDMARK_RATIO
@@ -40,11 +58,7 @@ export function generateCity(count: number): Building[] {
       const isLandmark = variant === "landmark";
 
       buildings.push({
-        position: [
-          (x - gridSize / 2) * spacing + jitterX,
-          0,
-          (z - gridSize / 2) * spacing + jitterZ,
-        ],
+        position: [posX, 0, posZ],
         width: isLandmark ? 0.5 + Math.random() * 0.25 : 0.7 + Math.random() * 0.7,
         depth: isLandmark ? 0.5 + Math.random() * 0.25 : 0.7 + Math.random() * 0.7,
         height: isLandmark ? 6.5 + Math.random() * 3.5 : 0.8 + Math.random() * 6.5,

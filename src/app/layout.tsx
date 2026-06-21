@@ -7,6 +7,7 @@ import CustomCursor from "@/components/CustomCursor";
 import AudioProvider from "@/components/AudioProvider";
 import AudioToggle from "@/components/AudioToggle";
 import SectionPulseTrigger from "@/components/SectionPulseTrigger";
+import ProjectSelectionProvider from "@/components/ProjectSelectionProvider";
 import WorldScene from "@/scenes/WorldScene";
 import "./globals.css";
 
@@ -69,11 +70,13 @@ export default function RootLayout({
         <AudioProvider>
           <IntroProvider>
             <SmoothScroll>
-              <WorldScene />
-              <AudioToggle />
-              <SectionPulseTrigger />
-              <IntroLoader />
-              <div className="relative z-10">{children}</div>
+              <ProjectSelectionProvider>
+                <WorldScene />
+                <AudioToggle />
+                <SectionPulseTrigger />
+                <IntroLoader />
+                <div className="relative z-10">{children}</div>
+              </ProjectSelectionProvider>
             </SmoothScroll>
           </IntroProvider>
         </AudioProvider>

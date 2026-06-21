@@ -9,10 +9,12 @@ import { DistantSkyline, generateDistantSkyline } from "@/scenes/DistantSkyline"
 import StarField from "@/scenes/StarField";
 import Effects from "@/scenes/Effects";
 import { TrafficFlows, DataStreams, EnergyPulses } from "@/scenes/SmartCitySystems";
+import { ProjectLandmarks } from "@/scenes/ProjectLandmarks";
 import { generateCity } from "@/scenes/cityBuildings";
 import { useIntroState } from "@/hooks/useIntroState";
 import { useQualityTier } from "@/hooks/useQualityTier";
 import { useSectionScrollRange } from "@/hooks/useSectionScrollRange";
+import { useProjectSelection } from "@/hooks/useProjectSelection";
 import { ScrollTrigger } from "@/utils/gsap";
 
 /**
@@ -42,6 +44,7 @@ import { ScrollTrigger } from "@/utils/gsap";
 export default function WorldScene() {
   const { introDone } = useIntroState();
   const tier = useQualityTier();
+  const { selected, select } = useProjectSelection();
   const buildingCount = tier === "low" ? 36 : 81;
 
   // Generated once per buildingCount (i.e. once per quality tier resolved
@@ -100,6 +103,7 @@ export default function WorldScene() {
 
         <HolographicGrid />
         <CityScape buildings={buildings} rise={introDone} detail={tier === "high"} />
+        <ProjectLandmarks activeId={selected?.id ?? null} onSelect={select} />
         {skylineBuildings.length > 0 && (
           <DistantSkyline buildings={skylineBuildings} />
         )}

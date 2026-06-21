@@ -1,138 +1,80 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/utils/gsap";
 import GlassPanel from "@/components/ui/GlassPanel";
+import Button from "@/components/ui/Button";
+import { useProjectSelection } from "@/hooks/useProjectSelection";
 
-type Project = {
-  title: string;
-  location: string;
-  year: string;
-  tag: string;
-  stats: { label: string; value: string }[];
-};
-
-// Placeholder content — swap in real project copy/renders whenever ready.
-// Pre-filled with projects from the CivilOS/EnginEx ecosystem as a starting point.
-const PROJECTS: Project[] = [
-  {
-    title: "CivilOS Structural",
-    location: "Bangladesh",
-    year: "2025",
-    tag: "Structural engineering, end to end",
-    stats: [
-      { label: "Modules", value: "20+" },
-      { label: "Compliance", value: "BNBC 2020" },
-      { label: "Status", value: "Live" },
-    ],
-  },
-  {
-    title: "Architectural Drawing App",
-    location: "Bangladesh",
-    year: "2025",
-    tag: "CAD/BIM in the browser",
-    stats: [
-      { label: "Phases", value: "12" },
-      { label: "Export", value: "PDF / SVG" },
-      { label: "Status", value: "Live" },
-    ],
-  },
-  {
-    title: "CivilOS Hub",
-    location: "Bangladesh",
-    year: "2024",
-    tag: "The ecosystem's data backbone",
-    stats: [
-      { label: "Role", value: "Data Backbone" },
-      { label: "Backend", value: "Firebase" },
-      { label: "Status", value: "In Progress" },
-    ],
-  },
-  {
-    title: "Build Engineering Hub",
-    location: "Bangladesh",
-    year: "2024",
-    tag: "Construction materials, online",
-    stats: [
-      { label: "Type", value: "E-Commerce" },
-      { label: "Payments", value: "bKash / Nagad" },
-      { label: "Status", value: "Live" },
-    ],
-  },
-];
-
+/**
+ * Used to pin this section and horizontally scroll-jack through a row of
+ * project cards (GSAP ScrollTrigger pin:true) — its own flat DOM
+ * carousel, fully disconnected from the 3D world. Two problems with that
+ * for what we're building now: (1) it's exactly the "text list" pattern
+ * we're moving away from, and (2) a pinned section stretches a fixed
+ * screen-height of real scroll into a much longer virtual scroll
+ * distance, which would have badly distorted WorldCameraRig's
+ * scroll-to-curve mapping through this part of the page.
+ *
+ * The 4 projects are now landmark towers placed directly in the city (see
+ * ProjectLandmarks inside WorldScene) — tapping one flies the camera in
+ * (WorldCameraRig's focus override) and opens the detail panel below,
+ * igloo.inc-style: the object IS the entry point, not a card describing
+ * it. This component only owns: (1) a small hint label while nothing is
+ * selected, prompting the user to tap a tower, and (2) the detail panel
+ * that appears once one is selected.
+ */
 export default function ProjectShowcase() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!sectionRef.current || !trackRef.current) return;
-    const track = trackRef.current;
-
-    const tween = gsap.to(track, {
-      x: () => -(track.scrollWidth - window.innerWidth),
-      ease: "none",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top top",
-        end: () => `+=${track.scrollWidth - window.innerWidth}`,
-        scrub: true,
-        pin: true,
-        invalidateOnRefresh: true,
-      },
-    });
-
-    return () => {
-      tween.scrollTrigger?.kill();
-      tween.kill();
-      ScrollTrigger.refresh();
-    };
-  }, []);
+  const { selected, close } = useProjectSelection();
 
   return (
-    <div ref={sectionRef} className="relative h-screen overflow-hidden">
-      <div
-        ref={trackRef}
-        className="absolute inset-0 flex items-center gap-8 pl-[10vw] pr-[10vw] will-change-transform"
-      >
-        {PROJECTS.map((project) => (
-          <GlassPanel
-            key={project.title}
-            data-cursor-hover
-            className="group flex-shrink-0 w-[85vw] sm:w-[60vw] lg:w-[45vw] grid sm:grid-cols-2 gap-6 p-8 transition-all duration-300 hover:border-neon-cyan/50 hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(45,226,230,0.15)]"
-          >
-            <div className="flex flex-col gap-2 justify-center">
-              <span className="font-body text-[11px] tracking-[0.2em] text-soft-white/50 uppercase">
-                {project.location} — {project.year}
-              </span>
-              <h3 className="font-display text-3xl sm:text-4xl leading-tight">
-                {project.title}
-              </h3>
-              <p className="font-body text-sm text-soft-white/50">
-                {project.tag}
-              </p>
-            </div>
+    <div className="relative min-h-[30vh] flex items-center justify-center px-6">
+      {!selected && (
+        <p className="font-body text-xs tracking-[0.3em] uppercase text-soft-white/40 animate-civion-pulse text-center">
+          Tap A Tower To Explore
+        </p>
+      )}
 
-            <GlassPanel
-              tone="graphite"
-              showGrid
-              clipOverflow
-              className="p-4 flex flex-col justify-center gap-3"
+      <div
+        className={`fixed inset-x-0 bottom-0 z-20 flex justify-center px-4 pb-6 transition-all duration-500 ease-out ${
+          selected
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-6 pointer-events-none"
+        }`}
+      >
+        {selected && (
+          <GlassPanel className="w-full max-w-md p-6 sm:p-8">
+            <button
+              type="button"
+              data-cursor-hover
+              onClick={close}
+              className="font-body text-[11px] tracking-[0.2em] uppercase text-soft-white/50 hover:text-neon-cyan transition-colors mb-4"
             >
-              {project.stats.map((stat) => (
-                <div
-                  key={stat.label}
-                  className="relative flex justify-between font-body text-xs"
-                >
-                  <span className="tracking-[0.15em] text-soft-white/50 uppercase">
+              ‹ Back To City
+            </button>
+
+            <p className="font-body text-[11px] tracking-[0.2em] uppercase text-neon-cyan/70 mb-1">
+              {selected.location} — {selected.year}
+            </p>
+            <h3 className="font-display text-2xl sm:text-3xl mb-2">{selected.title}</h3>
+            <p className="font-body text-sm text-soft-white/60 mb-6">{selected.tag}</p>
+
+            <div className="grid grid-cols-3 gap-3 mb-6 border-t border-deep-space pt-4">
+              {selected.stats.map((stat) => (
+                <div key={stat.label}>
+                  <p className="font-body text-[10px] tracking-[0.15em] uppercase text-soft-white/40">
                     {stat.label}
-                  </span>
-                  <span className="text-neon-cyan">{stat.value}</span>
+                  </p>
+                  <p className="font-display text-sm sm:text-base text-neon-cyan">
+                    {stat.value}
+                  </p>
                 </div>
               ))}
-            </GlassPanel>
+            </div>
+
+            <Button variant="solid" onClick={close}>
+              Close
+            </Button>
           </GlassPanel>
-        ))}
+        )}
       </div>
     </div>
   );

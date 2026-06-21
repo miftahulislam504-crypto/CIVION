@@ -5,6 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { gsap, ScrollTrigger } from "@/utils/gsap";
 import { useIntroState } from "@/hooks/useIntroState";
+import { useProjectSelection } from "@/hooks/useProjectSelection";
 
 /**
  * Single continuous camera path for the whole page. Replaces the old
@@ -105,6 +106,7 @@ function scrollFractionToCurveT(scrollFraction: number, waypointFractions: numbe
 export default function WorldCameraRig() {
   const { camera, pointer } = useThree();
   const { introDone } = useIntroState();
+  const { selected } = useProjectSelection();
   const scrollFraction = useRef(0);
   const waypointFractions = useRef<number[]>(
     WAYPOINTS.map((_, i) => i / (WAYPOINTS.length - 1))
@@ -112,10 +114,42 @@ export default function WorldCameraRig() {
   const lookTarget = useRef(new THREE.Vector3(0, 0, 0));
   const currentLook = useRef(new THREE.Vector3(0, 0, 0));
   const scrollDrivenPos = useRef(new THREE.Vector3());
+  const scrollOrIntroPos = useRef(new THREE.Vector3());
+  const parallaxLook = useRef(new THREE.Vector3());
 
   // 0 = camera sits at the far/high PRE_START arrival point (held while the
   // intro loader is up); 1 = fully handed off to scroll control.
   const arrival = useRef(0);
+
+  // 0 = camera fully follows the scroll-driven path; 1 = camera fully
+  // overridden to frame the selected project landmark. Tweened up when a
+  // landmark is clicked, back down to 0 when the detail panel closes —
+  // this is what makes the "fly into the building" transition feel like a
+  // deliberate cinematic move rather than a snap-cut.
+  const focus = useRef(0);
+  const focusTarget = useRef<THREE.Vector3>(new THREE.Vector3());
+  const focusLookAt = useRef<THREE.Vector3>(new THREE.Vector3());
+
+  useEffect(() => {
+    const obj = { t: focus.current };
+    const tween = gsap.to(obj, {
+      t: selected ? 1 : 0,
+      duration: selected ? 1.6 : 1.4,
+      ease: "power3.inOut",
+      onUpdate: () => {
+        focus.current = obj.t;
+      },
+    });
+
+    if (selected) {
+      focusTarget.current.set(...selected.cameraPosition);
+      focusLookAt.current.set(...selected.cameraLookAt);
+    }
+
+    return () => {
+      tween.kill();
+    };
+  }, [selected]);
 
   useEffect(() => {
     // Resolve real section positions after layout settles (and again on
@@ -166,13 +200,19 @@ export default function WorldCameraRig() {
     const curveT = scrollFractionToCurveT(scrollFraction.current, waypointFractions.current);
     curve.getPoint(curveT, scrollDrivenPos.current);
 
-    camera.position.lerpVectors(PATH_PRE_START, scrollDrivenPos.current, arrival.current);
+    // First blend: intro hand-off (PRE_START -> scroll path). Second
+    // blend: project focus override (scroll path -> landmark framing).
+    // Focus wins over scroll once a landmark is selected, regardless of
+    // where scroll currently sits — this is what makes clicking a
+    // landmark feel like the camera breaks away and flies to it.
+    scrollOrIntroPos.current.copy(PATH_PRE_START).lerp(scrollDrivenPos.current, arrival.current);
+    camera.position.lerpVectors(scrollOrIntroPos.current, focusTarget.current, focus.current);
 
-    lookTarget.current.set(
-      pointer.x * PARALLAX_STRENGTH.x,
-      pointer.y * PARALLAX_STRENGTH.y,
-      0
-    );
+    // Look target: normally drifts slightly with pointer position for a
+    // subtle parallax feel; while focused on a landmark, blends toward
+    // looking directly at that landmark instead.
+    parallaxLook.current.set(pointer.x * PARALLAX_STRENGTH.x, pointer.y * PARALLAX_STRENGTH.y, 0);
+    lookTarget.current.lerpVectors(parallaxLook.current, focusLookAt.current, focus.current);
     currentLook.current.lerp(lookTarget.current, LOOK_SMOOTHING);
 
     camera.lookAt(currentLook.current);
