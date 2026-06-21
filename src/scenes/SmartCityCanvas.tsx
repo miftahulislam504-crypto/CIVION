@@ -23,7 +23,7 @@ export default function SmartCityCanvas() {
         <fog attach="fog" args={["#0a0a0b", 10, 40]} />
         <SmartCityCameraRig />
         <HolographicGrid size={50} />
-        <SmartCityGrid count={tier === "low" ? 36 : 81} />
+        <SmartCityGrid count={tier === "low" ? 36 : 81} detail={tier === "high"} />
         {tier === "high" && <Effects />}
       </Canvas>
     </div>

@@ -48,7 +48,7 @@ The last three folders exist because Phase 1's plan called for them, but nothing
 1. **Hero's canvas** (`CanvasBackground.tsx`) — page-fixed, mounted once in the root layout, always present behind the scrollable content. Its camera only animates while scrolling through `#hero`; outside that range it sits frozen, hidden behind whichever section's opaque background is currently on top. It pauses its render loop entirely (`frameloop="never"`) once Hero scrolls out of view, so it isn't burning GPU the rest of the page.
 2. **Section-local canvases** (Smart City, Final Cinematic) — live inside their own section, lazy-mounted via `useInView` only once scrolled near.
 
-**Everything else** (Blueprint, Structural, Engineering Lab, Project Showcase, Timeline, Contact) is plain DOM/SVG + GSAP — deliberately not 3D, because none of that content needed a camera or real depth, just animation.
+**Everything else** (Blueprint, Structural, Engineering Lab, Project Showcase, Timeline) is plain DOM/SVG + GSAP — deliberately not 3D, because none of that content needed a camera or real depth, just animation. Contact is mostly DOM too, but opens on a small lazy-mounted canvas (`HelmetCanvas` / `HelmetRig`) — a wireframe hardhat, tapped to reveal the form.
 
 **Why some buildings repeat:** `SmartCityGrid` (the procedural city) is reused as-is by the Final Cinematic section — narratively it's the same city, just viewed from much farther away.
 
@@ -56,7 +56,7 @@ The last three folders exist because Phase 1's plan called for them, but nothing
 
 ## Known gaps (honest list)
 
-- **Contact form has no backend.** Submitting just flips the UI to a "transmitted" state — nothing is sent anywhere. Wire it to Firebase, Formspree, Resend, etc. before relying on it.
+- **Contact form has no backend.** Tap the helmet in `ContactHelmet.tsx` to open it — submitting just flips the UI to a "sent" state, nothing is sent anywhere. Wire it to Firebase, Formspree, Resend, etc. before relying on it.
 - **No real device testing.** Only sandbox build/lint/type-check has been verified. Test on an actual phone before launch.
 - **No OG image.** `layout.tsx` has an OpenGraph block but no `images` entry — link previews will show no thumbnail until you add `/public/og-image.png` (1200×630) and reference it.
 - **Default favicon.** `src/app/favicon.ico` is still the Next.js default — swap it for a CIVION mark.

@@ -3,10 +3,11 @@ import BlueprintScene from "@/components/BlueprintScene";
 import StructuralScene from "@/components/StructuralScene";
 import SmartCitySection from "@/components/SmartCitySection";
 import ProjectShowcase from "@/components/ProjectShowcase";
+import ProjectFiles from "@/components/ProjectFiles";
 import EngineeringLab from "@/components/EngineeringLab";
 import Timeline from "@/components/Timeline";
 import FinalCinematicSection from "@/components/FinalCinematicSection";
-import ContactTerminal from "@/components/ContactTerminal";
+import ContactHelmet from "@/components/ContactHelmet";
 import SectionHeading from "@/components/ui/SectionHeading";
 
 export default function Home() {
@@ -42,6 +43,14 @@ export default function Home() {
       </section>
 
       <section
+        id="files"
+        className="relative bg-graphite py-32 px-6 border-t border-deep-space"
+      >
+        <SectionHeading title="Field Reports" subtitle="Structural design, architectural drawings, and BOQ documents from real project work." />
+        <ProjectFiles />
+      </section>
+
+      <section
         id="lab"
         className="relative bg-graphite py-32 px-6 border-t border-deep-space"
       >
@@ -63,8 +72,8 @@ export default function Home() {
         id="contact"
         className="relative bg-graphite py-32 px-6 border-t border-deep-space"
       >
-        <SectionHeading title="Open A Channel" />
-        <ContactTerminal />
+        <SectionHeading title="Let's Build Something" />
+        <ContactHelmet />
       </section>
     </main>
   );

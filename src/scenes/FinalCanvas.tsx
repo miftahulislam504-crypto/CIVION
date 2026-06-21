@@ -23,7 +23,7 @@ export default function FinalCanvas() {
         <FinalCameraRig />
         <StarField count={tier === "low" ? 300 : 800} />
         <HolographicGrid size={50} />
-        <SmartCityGrid count={tier === "low" ? 36 : 81} />
+        <SmartCityGrid count={tier === "low" ? 36 : 81} detail={tier === "high"} />
         {tier === "high" && <Effects />}
       </Canvas>
     </div>

@@ -82,3 +82,17 @@ body {
   height: 20%;
   animation: civion-wave 1.2s ease-in-out infinite;
 }
+
+@keyframes civion-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-civion-pulse {
+  animation: civion-pulse 2.2s ease-in-out infinite;
+}

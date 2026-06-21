@@ -4,46 +4,62 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/utils/gsap";
 import { useIntroState } from "@/hooks/useIntroState";
 
-const ENTRANCE_DURATION = 1.1;
+// Small delay after intro hand-off so the city/camera get a beat to start
+// moving before text arrives — reads as "the scene opens, then speaks."
+const REVEAL_DELAY = 0.5;
 
 export default function HeroText() {
-  const ref = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLSpanElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
   const { introDone } = useIntroState();
 
   useEffect(() => {
-    if (!introDone || !ref.current) return;
-    const el = ref.current;
+    if (!introDone || !wrapperRef.current) return;
+    const wrapper = wrapperRef.current;
     let exitTween: gsap.core.Tween | undefined;
 
-    // Entrance plays first; only once it's finished do we wire up the
-    // scroll-linked exit fade, so the two never fight over the same
-    // opacity/transform properties at the same time.
-    const entrance = gsap.fromTo(
-      el,
-      { opacity: 0, y: 24 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: ENTRANCE_DURATION,
-        ease: "power3.out",
-        onComplete: () => {
-          exitTween = gsap.to(el, {
-            opacity: 0,
-            y: -40,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#hero",
-              start: "top top",
-              end: "35% top",
-              scrub: true,
-            },
-          });
-        },
-      }
-    );
+    const tl = gsap.timeline({
+      delay: REVEAL_DELAY,
+      onComplete: () => {
+        // Entrance is fully settled; only now wire the scroll-linked exit
+        // fade, so the two never fight over opacity/transform at once.
+        exitTween = gsap.to(wrapper, {
+          opacity: 0,
+          y: -40,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "35% top",
+            scrub: true,
+          },
+        });
+      },
+    });
+
+    tl.set(wrapper, { opacity: 1 })
+      .fromTo(
+        eyebrowRef.current,
+        { opacity: 0, y: 10, letterSpacing: "0.6em" },
+        { opacity: 1, y: 0, letterSpacing: "0.3em", duration: 0.7, ease: "power2.out" }
+      )
+      .fromTo(
+        titleRef.current,
+        { opacity: 0, y: 28 },
+        { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" },
+        "-=0.35"
+      )
+      .fromTo(
+        subtitleRef.current,
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
+        "-=0.45"
+      );
 
     return () => {
-      entrance.kill();
+      tl.kill();
       exitTween?.scrollTrigger?.kill();
       exitTween?.kill();
     };
@@ -51,16 +67,25 @@ export default function HeroText() {
 
   return (
     <div
-      ref={ref}
+      ref={wrapperRef}
       className="flex flex-col items-center gap-4 text-center px-6 opacity-0"
     >
-      <span className="font-body text-xs tracking-[0.3em] uppercase text-neon-cyan">
+      <span
+        ref={eyebrowRef}
+        className="font-body text-xs uppercase text-neon-cyan opacity-0"
+      >
         CIVION
       </span>
-      <h1 className="font-display text-5xl sm:text-7xl font-medium tracking-tight">
+      <h1
+        ref={titleRef}
+        className="font-display text-5xl sm:text-7xl font-medium tracking-tight opacity-0"
+      >
         Engineering The Future
       </h1>
-      <p className="font-body text-sm sm:text-base text-soft-white/70 tracking-wide">
+      <p
+        ref={subtitleRef}
+        className="font-body text-sm sm:text-base text-soft-white/70 tracking-wide opacity-0"
+      >
         Architecture • Structures • Intelligence • Systems
       </p>
     </div>

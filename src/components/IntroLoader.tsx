@@ -7,6 +7,7 @@ import { useIntroState } from "@/hooks/useIntroState";
 const LOAD_DURATION = 2200; // ms, how long the progress bar takes to fill
 const HOLD_AT_100 = 350; // ms, brief pause once it hits 100% before fading
 const FADE_DURATION = 700; // ms — keep in sync with the transitionDuration style below
+const SCROLL_RELEASE_DELAY = 1800; // ms after intro hands off — lets the camera dolly/text reveal play before scroll can interrupt it
 
 export default function IntroLoader() {
   const lenis = useLenis();
@@ -22,12 +23,15 @@ export default function IntroLoader() {
     }
   }, [lenis, introDone]);
 
-  // Release scroll the moment loading completes, regardless of when the
-  // Lenis instance became available.
+  // Release scroll a beat after handoff, not the instant it happens — the
+  // cinematic camera dolly and staged text reveal need a moment to play
+  // before the user can scroll past them.
   useEffect(() => {
-    if (introDone) {
+    if (!introDone) return;
+    const timeout = setTimeout(() => {
       lenis?.start();
-    }
+    }, SCROLL_RELEASE_DELAY);
+    return () => clearTimeout(timeout);
   }, [introDone, lenis]);
 
   // Drive the progress bar once, on mount.

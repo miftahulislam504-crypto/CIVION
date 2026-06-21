@@ -44,7 +44,11 @@ export default function CanvasBackground() {
         <fog attach="fog" args={["#0a0a0b", 9, 34]} />
         <CameraRig />
         <HolographicGrid />
-        <CityScape rise={introDone} count={tier === "low" ? 36 : 64} />
+        <CityScape
+          rise={introDone}
+          detail={tier === "high"}
+          count={tier === "low" ? 36 : 64}
+        />
         {tier === "high" && <Effects />}
       </Canvas>
     </div>

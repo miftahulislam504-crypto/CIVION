@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import SmoothScroll from "@/components/SmoothScroll";
-import ScrollHUD from "@/components/ScrollHUD";
 import IntroLoader from "@/components/IntroLoader";
 import IntroProvider from "@/components/IntroProvider";
 import CustomCursor from "@/components/CustomCursor";
@@ -71,7 +70,6 @@ export default function RootLayout({
           <IntroProvider>
             <SmoothScroll>
               <CanvasBackground />
-              <ScrollHUD />
               <AudioToggle />
               <SectionPulseTrigger />
               <IntroLoader />
