@@ -15,32 +15,27 @@ const MILESTONES: Milestone[] = [
   {
     year: "2024",
     title: "Ek Ummah Foundation",
-    description:
-      "Where it started — a Bengali Islamic fintech PWA, built entirely from Termux.",
+    description: "Built from Termux. Where it started.",
   },
   {
     year: "2025",
     title: "CivilOS Structural",
-    description:
-      "A full structural engineering platform — BNBC 2020 compliant, analysis through PDF reports.",
+    description: "BNBC 2020, fully compliant.",
   },
   {
     year: "2025",
     title: "Architectural Drawing App",
-    description:
-      "CAD/BIM tooling with Fabric.js — drafting, schedules, and compliance checks, in the browser.",
+    description: "CAD/BIM, in the browser.",
   },
   {
     year: "2025",
     title: "CivilOS Hub",
-    description:
-      "The data backbone — every module in the ecosystem, connected through one source of truth.",
+    description: "The data backbone.",
   },
   {
     year: "2026",
     title: "CIVION",
-    description:
-      "This site — the cinematic front door to everything built so far.",
+    description: "This site.",
   },
 ];
 

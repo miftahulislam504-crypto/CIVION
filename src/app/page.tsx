@@ -23,11 +23,7 @@ export default function Home() {
         id="blueprint"
         className="relative bg-graphite py-32 px-6 border-t border-deep-space"
       >
-        <SectionHeading
-          eyebrow="02 — The Blueprint"
-          title="The Birth Of Ideas"
-          subtitle="Hover the markers for project data."
-        />
+        <SectionHeading title="The Birth Of Ideas" />
         <BlueprintScene />
       </section>
 
@@ -35,12 +31,7 @@ export default function Home() {
         id="structural"
         className="relative bg-graphite py-32 px-6 border-t border-deep-space"
       >
-        <SectionHeading
-          eyebrow="03 — Structural Engineering"
-          eyebrowColor="electric-blue"
-          title="Where Mathematics Becomes Reality"
-          subtitle="Columns rise, cables tension, then a live load crosses the span."
-        />
+        <SectionHeading title="Where Mathematics Becomes Reality" />
         <StructuralScene />
       </section>
 
@@ -54,11 +45,7 @@ export default function Home() {
         id="lab"
         className="relative bg-graphite py-32 px-6 border-t border-deep-space"
       >
-        <SectionHeading
-          eyebrow="06 — Engineering Lab"
-          title="Test The Structure Yourself"
-          subtitle="Drag the load along the beam. Switch materials. Run a seismic test."
-        />
+        <SectionHeading title="Test The Structure Yourself" />
         <EngineeringLab />
       </section>
 
@@ -66,12 +53,7 @@ export default function Home() {
         id="timeline"
         className="relative bg-graphite py-32 px-6 border-t border-deep-space"
       >
-        <SectionHeading
-          eyebrow="07 — Timeline"
-          eyebrowColor="electric-blue"
-          title="Evolution Of Engineering Intelligence"
-          className="mb-20"
-        />
+        <SectionHeading title="Evolution Of Engineering Intelligence" className="mb-20" />
         <Timeline />
       </section>
 
@@ -81,11 +63,7 @@ export default function Home() {
         id="contact"
         className="relative bg-graphite py-32 px-6 border-t border-deep-space"
       >
-        <SectionHeading
-          eyebrow="08 — Contact"
-          eyebrowColor="warm-orange"
-          title="Open A Channel"
-        />
+        <SectionHeading title="Open A Channel" />
         <ContactTerminal />
       </section>
     </main>

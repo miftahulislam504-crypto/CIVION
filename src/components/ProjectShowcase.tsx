@@ -8,7 +8,7 @@ type Project = {
   title: string;
   location: string;
   year: string;
-  description: string;
+  tag: string;
   stats: { label: string; value: string }[];
 };
 
@@ -19,8 +19,7 @@ const PROJECTS: Project[] = [
     title: "CivilOS Structural",
     location: "Bangladesh",
     year: "2025",
-    description:
-      "A BNBC 2020 compliant structural engineering platform — load analysis, frame analysis, BBS, and a full PDF report engine.",
+    tag: "Structural engineering, end to end",
     stats: [
       { label: "Modules", value: "20+" },
       { label: "Compliance", value: "BNBC 2020" },
@@ -31,8 +30,7 @@ const PROJECTS: Project[] = [
     title: "Architectural Drawing App",
     location: "Bangladesh",
     year: "2025",
-    description:
-      "A CAD/BIM tool built with Fabric.js — structural grids, annotation, schedules, and automated compliance checking.",
+    tag: "CAD/BIM in the browser",
     stats: [
       { label: "Phases", value: "12" },
       { label: "Export", value: "PDF / SVG" },
@@ -43,8 +41,7 @@ const PROJECTS: Project[] = [
     title: "CivilOS Hub",
     location: "Bangladesh",
     year: "2024",
-    description:
-      "The data backbone connecting every module in the ecosystem via Firestore — project registry and cross-app sync.",
+    tag: "The ecosystem's data backbone",
     stats: [
       { label: "Role", value: "Data Backbone" },
       { label: "Backend", value: "Firebase" },
@@ -55,8 +52,7 @@ const PROJECTS: Project[] = [
     title: "Build Engineering Hub",
     location: "Bangladesh",
     year: "2024",
-    description:
-      "A construction materials e-commerce platform with an admin panel and local payment integration.",
+    tag: "Construction materials, online",
     stats: [
       { label: "Type", value: "E-Commerce" },
       { label: "Payments", value: "bKash / Nagad" },
@@ -95,15 +91,6 @@ export default function ProjectShowcase() {
 
   return (
     <div ref={sectionRef} className="relative h-screen overflow-hidden">
-      <div className="absolute top-12 left-0 right-0 text-center px-6 z-10">
-        <span className="font-body text-xs tracking-[0.3em] uppercase text-neon-cyan">
-          05 — Project Showcase
-        </span>
-        <h2 className="font-display text-3xl sm:text-5xl mt-4">
-          Selected Works
-        </h2>
-      </div>
-
       <div
         ref={trackRef}
         className="absolute inset-0 flex items-center gap-8 pl-[10vw] pr-[10vw] will-change-transform"
@@ -114,15 +101,15 @@ export default function ProjectShowcase() {
             data-cursor-hover
             className="group flex-shrink-0 w-[85vw] sm:w-[60vw] lg:w-[45vw] grid sm:grid-cols-2 gap-6 p-8 transition-all duration-300 hover:border-neon-cyan/50 hover:-translate-y-2 hover:shadow-[0_0_40px_rgba(45,226,230,0.15)]"
           >
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2 justify-center">
               <span className="font-body text-[11px] tracking-[0.2em] text-soft-white/50 uppercase">
                 {project.location} — {project.year}
               </span>
-              <h3 className="font-display text-2xl sm:text-3xl">
+              <h3 className="font-display text-3xl sm:text-4xl leading-tight">
                 {project.title}
               </h3>
-              <p className="font-body text-sm text-soft-white/70">
-                {project.description}
+              <p className="font-body text-sm text-soft-white/50">
+                {project.tag}
               </p>
             </div>
 
