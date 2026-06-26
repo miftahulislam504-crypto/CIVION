@@ -6,68 +6,130 @@ import * as THREE from "three";
 import { gsap, ScrollTrigger } from "@/utils/gsap";
 import { useIntroState } from "@/hooks/useIntroState";
 import { useProjectSelection } from "@/hooks/useProjectSelection";
+import { PROJECT_LANDMARKS } from "@/scenes/projectLandmarks";
 
 /**
- * Single continuous camera path for the whole page. Replaces the old
- * per-section rigs (Hero's CameraRig, SmartCityCameraRig, FinalCameraRig)
- * which each lived in their own mounted/unmounted Canvas and reset the
- * camera back to a fresh starting point every time a new section scrolled
- * into view. This rig never resets — one ScrollTrigger spans the entire
- * document, and the camera moves smoothly through a single chain of
- * waypoints, the same way igloo.inc holds one scene and just keeps moving
- * the camera through it.
+ * WorldCameraRig — single continuous camera path for the whole page.
  *
- * IMPORTANT: waypoints are anchored to actual section positions, not a
- * blind even 0–1 split across total scroll. The original three rigs each
- * owned their own short section (e.g. SmartCity was exactly "180vh", and
- * its rig's t=0..1 only ever had to cover that one section). Once merged
- * into one rig spanning the WHOLE document — including blueprint,
- * structural, showcase, and files sections that have no camera waypoint of
- * their own — an even split would put e.g. the "rise above the city"
- * moment at a fixed fraction of total page height that has nothing to do
- * with where the Smart City section actually sits. Instead, each waypoint
- * is tagged with the id of the section it belongs to, and at runtime we
- * measure where that section actually starts/ends and build the curve's
- * t-mapping from that.
+ * Flow:
+ *   Hero (descend) → Smart City (rise above skyline) →
+ *   Project Tour (visit each building one by one, scroll-driven) →
+ *   Final (pull out to orbit) → Contact
+ *
+ * Waypoints are anchored to real section IDs so positions don't shift
+ * if section heights change. Project tour waypoints are anchored to
+ * "project-tour-{index}" sections created by ProjectTourSection.
+ *
+ * When a building is clicked, focus override (0→1) lerps the camera
+ * smoothly from the scroll path to that building's close-up position.
  */
-const PATH_PRE_START = new THREE.Vector3(0, 14.5, 23); // cinematic arrival point, held during intro
+
+const PATH_PRE_START = new THREE.Vector3(0, 14.5, 23);
 
 type Waypoint = {
   pos: THREE.Vector3;
-  /** Section id this waypoint should align with, and how far into that
-   *  section's scroll range (0 = its top, 1 = its bottom). Sections with
-   *  no waypoint of their own are simply passed through at a steady speed
-   *  between their neighbors' waypoints. */
+  lookAt: THREE.Vector3; // explicit lookAt per waypoint for more control
   anchorId: string;
-  anchorFraction: number;
+  anchorFraction: number; // 0 = top of section, 1 = bottom
 };
 
-const WAYPOINTS: Waypoint[] = [
-  { pos: new THREE.Vector3(0, 9.5, 15), anchorId: "hero", anchorFraction: 0.35 },
-  { pos: new THREE.Vector3(0, 1.4, 1.5), anchorId: "hero", anchorFraction: 0.9 },
-  { pos: new THREE.Vector3(0, 2, 14), anchorId: "smart-city", anchorFraction: 0.05 },
-  { pos: new THREE.Vector3(0, 16, 0.1), anchorId: "smart-city", anchorFraction: 0.65 },
-  { pos: new THREE.Vector3(0, 10, 22), anchorId: "final", anchorFraction: 0.05 },
-  { pos: new THREE.Vector3(0, 95, 75), anchorId: "final", anchorFraction: 0.95 },
+// ── Helper: compute a camera position slightly in front of a building ──
+// Each building's cameraPosition is its "click zoom" position (very close).
+// For the scroll tour we want a wider, more scenic framing — pull back a
+// bit along the Z axis and raise the camera slightly.
+function tourCamPos(cp: [number, number, number], bldgZ: number): THREE.Vector3 {
+  // "in front" direction: if building is at negative Z we approach from
+  // positive Z (and vice versa). Pull back 3-5 units further than the
+  // click-zoom position so the whole building is framed, not just its base.
+  const pullBack = bldgZ < 0 ? 4.5 : bldgZ > 3 ? -4.5 : 0;
+  return new THREE.Vector3(cp[0], cp[1] + 1.2, cp[2] + pullBack);
+}
+
+function tourLookAt(la: [number, number, number]): THREE.Vector3 {
+  return new THREE.Vector3(la[0], la[1], la[2]);
+}
+
+// ── Build waypoints ────────────────────────────────────────────────────
+const HERO_WAYPOINTS: Waypoint[] = [
+  {
+    pos: new THREE.Vector3(0, 9.5, 15),
+    lookAt: new THREE.Vector3(0, 0, 0),
+    anchorId: "hero",
+    anchorFraction: 0.35,
+  },
+  {
+    pos: new THREE.Vector3(0, 1.4, 1.5),
+    lookAt: new THREE.Vector3(0, 0, 0),
+    anchorId: "hero",
+    anchorFraction: 0.9,
+  },
 ];
 
-const ARRIVAL_DURATION = 2.6; // seconds — the slow dolly-in once the loader hands off
+const SMART_CITY_WAYPOINTS: Waypoint[] = [
+  {
+    pos: new THREE.Vector3(0, 2, 14),
+    lookAt: new THREE.Vector3(0, 0, 0),
+    anchorId: "smart-city",
+    anchorFraction: 0.05,
+  },
+  {
+    pos: new THREE.Vector3(0, 16, 0.1),
+    lookAt: new THREE.Vector3(0, 0, 0),
+    anchorId: "smart-city",
+    anchorFraction: 0.65,
+  },
+];
 
+// প্রতিটা project building-এর জন্য একটা waypoint — section 50% এ থামে
+const PROJECT_WAYPOINTS: Waypoint[] = PROJECT_LANDMARKS.map((lm, i) => ({
+  pos: tourCamPos(lm.cameraPosition, lm.position[2]),
+  lookAt: tourLookAt(lm.cameraLookAt),
+  anchorId: `project-tour-${i}`,
+  anchorFraction: 0.5,
+}));
+
+const FINAL_WAYPOINTS: Waypoint[] = [
+  {
+    pos: new THREE.Vector3(0, 10, 22),
+    lookAt: new THREE.Vector3(0, 0, 0),
+    anchorId: "final",
+    anchorFraction: 0.05,
+  },
+  {
+    pos: new THREE.Vector3(0, 95, 75),
+    lookAt: new THREE.Vector3(0, 0, 0),
+    anchorId: "final",
+    anchorFraction: 0.95,
+  },
+];
+
+const WAYPOINTS: Waypoint[] = [
+  ...HERO_WAYPOINTS,
+  ...SMART_CITY_WAYPOINTS,
+  ...PROJECT_WAYPOINTS,
+  ...FINAL_WAYPOINTS,
+];
+
+const ARRIVAL_DURATION = 2.6;
 const PARALLAX_STRENGTH = new THREE.Vector2(2, 1.2);
 const LOOK_SMOOTHING = 0.06;
 
-const curve = new THREE.CatmullRomCurve3(
+// Position curve (CatmullRom through all waypoint positions)
+const positionCurve = new THREE.CatmullRomCurve3(
   WAYPOINTS.map((w) => w.pos),
   false,
   "catmullrom",
   0.4
 );
 
-/** Resolves each waypoint's document scroll-fraction (0–1 of total page
- *  height) by measuring its anchor section's actual offsetTop/height.
- *  Falls back to an even spread if a section isn't found (shouldn't
- *  happen, but guards against a renamed/removed id breaking the camera
- *  entirely). */
+// LookAt curve (same — interpolates look targets smoothly)
+const lookAtCurve = new THREE.CatmullRomCurve3(
+  WAYPOINTS.map((w) => w.lookAt),
+  false,
+  "catmullrom",
+  0.4
+);
+
 function resolveWaypointFractions(): number[] {
   const docHeight = document.documentElement.scrollHeight - window.innerHeight;
   if (docHeight <= 0) {
@@ -78,19 +140,17 @@ function resolveWaypointFractions(): number[] {
     const el = document.getElementById(w.anchorId);
     if (!el) return i / (WAYPOINTS.length - 1);
     const sectionStart = el.offsetTop;
-    const sectionEnd = el.offsetTop + el.offsetHeight;
-    const target = sectionStart + (sectionEnd - sectionStart) * w.anchorFraction;
+    const sectionHeight = el.offsetHeight;
+    const target = sectionStart + sectionHeight * w.anchorFraction;
     return THREE.MathUtils.clamp(target / docHeight, 0, 1);
   });
 }
 
-/** Given the document's current scroll fraction (0–1) and the resolved
- *  waypoint fractions, find where along the curve's own 0–1 parameter
- *  space we should sample — piecewise-linear between whichever two
- *  waypoint fractions the scroll position falls between. */
-function scrollFractionToCurveT(scrollFraction: number, waypointFractions: number[]): number {
+function scrollFractionToCurveT(
+  scrollFraction: number,
+  waypointFractions: number[]
+): number {
   const segments = waypointFractions.length - 1;
-
   for (let i = 0; i < segments; i++) {
     const a = waypointFractions[i];
     const b = waypointFractions[i + 1];
@@ -99,7 +159,6 @@ function scrollFractionToCurveT(scrollFraction: number, waypointFractions: numbe
       return (i + localT) / segments;
     }
   }
-
   return scrollFraction <= waypointFractions[0] ? 0 : 1;
 }
 
@@ -107,29 +166,24 @@ export default function WorldCameraRig() {
   const { camera, pointer } = useThree();
   const { introDone } = useIntroState();
   const { selected } = useProjectSelection();
+
   const scrollFraction = useRef(0);
   const waypointFractions = useRef<number[]>(
     WAYPOINTS.map((_, i) => i / (WAYPOINTS.length - 1))
   );
-  const lookTarget = useRef(new THREE.Vector3(0, 0, 0));
+
   const currentLook = useRef(new THREE.Vector3(0, 0, 0));
   const scrollDrivenPos = useRef(new THREE.Vector3());
+  const scrollDrivenLook = useRef(new THREE.Vector3());
   const scrollOrIntroPos = useRef(new THREE.Vector3());
-  const parallaxLook = useRef(new THREE.Vector3());
+  const parallaxOffset = useRef(new THREE.Vector3());
 
-  // 0 = camera sits at the far/high PRE_START arrival point (held while the
-  // intro loader is up); 1 = fully handed off to scroll control.
   const arrival = useRef(0);
-
-  // 0 = camera fully follows the scroll-driven path; 1 = camera fully
-  // overridden to frame the selected project landmark. Tweened up when a
-  // landmark is clicked, back down to 0 when the detail panel closes —
-  // this is what makes the "fly into the building" transition feel like a
-  // deliberate cinematic move rather than a snap-cut.
   const focus = useRef(0);
-  const focusTarget = useRef<THREE.Vector3>(new THREE.Vector3());
-  const focusLookAt = useRef<THREE.Vector3>(new THREE.Vector3());
+  const focusTarget = useRef(new THREE.Vector3());
+  const focusLookAt = useRef(new THREE.Vector3());
 
+  // Focus tween: scroll path → building close-up
   useEffect(() => {
     const obj = { t: focus.current };
     const tween = gsap.to(obj, {
@@ -151,17 +205,15 @@ export default function WorldCameraRig() {
     };
   }, [selected]);
 
+  // Scroll tracker + waypoint resolver
   useEffect(() => {
-    // Resolve real section positions after layout settles (and again on
-    // resize, since section heights can change with viewport width —
-    // e.g. text reflow changes a section's offsetHeight).
     const resolve = () => {
       waypointFractions.current = resolveWaypointFractions();
     };
-    resolve();
+    // Delay slightly to let all project-tour sections render and measure
+    const timer = setTimeout(resolve, 100);
 
-    const onResize = () => resolve();
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", resolve);
 
     const trigger = ScrollTrigger.create({
       trigger: document.body,
@@ -175,11 +227,13 @@ export default function WorldCameraRig() {
     });
 
     return () => {
-      window.removeEventListener("resize", onResize);
+      clearTimeout(timer);
+      window.removeEventListener("resize", resolve);
       trigger.kill();
     };
   }, []);
 
+  // Intro arrival tween
   useEffect(() => {
     if (!introDone) return;
     const obj = { t: 0 };
@@ -197,23 +251,44 @@ export default function WorldCameraRig() {
   }, [introDone]);
 
   useFrame(() => {
-    const curveT = scrollFractionToCurveT(scrollFraction.current, waypointFractions.current);
-    curve.getPoint(curveT, scrollDrivenPos.current);
+    const curveT = scrollFractionToCurveT(
+      scrollFraction.current,
+      waypointFractions.current
+    );
 
-    // First blend: intro hand-off (PRE_START -> scroll path). Second
-    // blend: project focus override (scroll path -> landmark framing).
-    // Focus wins over scroll once a landmark is selected, regardless of
-    // where scroll currently sits — this is what makes clicking a
-    // landmark feel like the camera breaks away and flies to it.
-    scrollOrIntroPos.current.copy(PATH_PRE_START).lerp(scrollDrivenPos.current, arrival.current);
-    camera.position.lerpVectors(scrollOrIntroPos.current, focusTarget.current, focus.current);
+    // Sample both position and lookAt curves at the same T
+    positionCurve.getPoint(curveT, scrollDrivenPos.current);
+    lookAtCurve.getPoint(curveT, scrollDrivenLook.current);
 
-    // Look target: normally drifts slightly with pointer position for a
-    // subtle parallax feel; while focused on a landmark, blends toward
-    // looking directly at that landmark instead.
-    parallaxLook.current.set(pointer.x * PARALLAX_STRENGTH.x, pointer.y * PARALLAX_STRENGTH.y, 0);
-    lookTarget.current.lerpVectors(parallaxLook.current, focusLookAt.current, focus.current);
-    currentLook.current.lerp(lookTarget.current, LOOK_SMOOTHING);
+    // Blend 1: intro arrival (PRE_START → scroll path)
+    scrollOrIntroPos.current
+      .copy(PATH_PRE_START)
+      .lerp(scrollDrivenPos.current, arrival.current);
+
+    // Blend 2: focus override (scroll path → building close-up)
+    camera.position.lerpVectors(
+      scrollOrIntroPos.current,
+      focusTarget.current,
+      focus.current
+    );
+
+    // LookAt: scroll-driven lookAt + slight parallax offset, blends to
+    // building's exact lookAt when focused
+    parallaxOffset.current.set(
+      pointer.x * PARALLAX_STRENGTH.x,
+      pointer.y * PARALLAX_STRENGTH.y,
+      0
+    );
+
+    // When touring (not focused), add subtle parallax to the curve's lookAt
+    const baseLook = scrollDrivenLook.current
+      .clone()
+      .add(parallaxOffset.current.multiplyScalar(1 - focus.current));
+
+    currentLook.current.lerp(
+      focus.current > 0.5 ? focusLookAt.current : baseLook,
+      LOOK_SMOOTHING
+    );
 
     camera.lookAt(currentLook.current);
   });
