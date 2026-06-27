@@ -1,11 +1,5 @@
 "use client";
 
-/**
- * Used to mount its own FinalCanvas here. The city/starfield/effects are
- * now rendered once, globally, by WorldScene (see layout.tsx) — this
- * section just marks the scroll range where WorldCameraRig's path pulls
- * out into orbit, and fades in the closing line over that.
- */
 import { useEffect, useRef } from "react";
 import { gsap } from "@/utils/gsap";
 
@@ -42,13 +36,17 @@ export default function FinalCinematicSection() {
       <div className="sticky top-0 h-screen overflow-hidden pointer-events-none">
         <div
           ref={textRef}
-          className="absolute inset-0 flex items-center justify-center px-6 opacity-0"
+          className="absolute inset-0 flex flex-col items-start justify-center px-6 opacity-0 max-w-lg"
         >
-          <p className="font-display text-3xl sm:text-5xl lg:text-6xl text-center max-w-3xl leading-tight">
-            We Don&apos;t Just Build Structures.
-            <br />
-            We Build The Future.
+          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/50 mb-6">
+            /////// Manifesto
           </p>
+          <p className="font-mono text-2xl sm:text-4xl font-bold leading-snug text-soft-white">
+            We Don&apos;t Just<br />
+            Build Structures.<br />
+            <span className="text-neon-cyan">We Build The Future.</span>
+          </p>
+          <div className="mt-8 w-8 h-px bg-neon-cyan/40" />
         </div>
       </div>
     </section>

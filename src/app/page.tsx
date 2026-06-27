@@ -3,12 +3,10 @@ import SmartCitySection from "@/components/SmartCitySection";
 import ProjectTourSection from "@/components/ProjectTourSection";
 import FinalCinematicSection from "@/components/FinalCinematicSection";
 import ContactHelmet from "@/components/ContactHelmet";
-import SectionHeading from "@/components/ui/SectionHeading";
 
 export default function Home() {
   return (
     <main>
-      {/* ── 1. Hero — camera descends into the city ── */}
       <section
         id="hero"
         className="h-[200vh] flex items-start justify-center pt-[28vh]"
@@ -16,18 +14,23 @@ export default function Home() {
         <HeroText />
       </section>
 
-      {/* ── 2. Smart City — camera rises above the skyline ── */}
       <SmartCitySection />
 
-      {/* ── 3. Project Tour — camera visits each building one by one ── */}
       <ProjectTourSection />
 
-      {/* ── 4. Final Cinematic — camera pulls out to orbit ── */}
       <FinalCinematicSection />
 
-      {/* ── 5. Contact ── */}
       <section id="contact" className="relative py-32 px-6">
-        <SectionHeading title="Let's Build Something" />
+        {/* igloo-style contact heading */}
+        <div className="max-w-lg mx-auto mb-14">
+          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/50 mb-3">
+            /////// Contact
+          </p>
+          <h2 className="font-mono text-3xl sm:text-4xl font-bold leading-tight text-soft-white">
+            Let&apos;s Build<br />Something.
+          </h2>
+          <div className="w-8 h-px mt-4" style={{ background: "rgba(45,226,230,0.35)" }} />
+        </div>
         <ContactHelmet />
       </section>
     </main>
