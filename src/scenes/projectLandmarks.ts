@@ -1,25 +1,12 @@
 import * as THREE from "three";
 
-/**
- * All portfolio projects, each placed at a FIXED position within the
- * city so they have stable coordinates to raycast against and to fly
- * the camera to. Each landmark is a taller, more distinct tower so
- * it reads as deliberately placed, not just another block in the grid.
- *
- * Layout: arranged in a rough grid across the city footprint (±11 units).
- * 13 projects spread across 4 rows:
- *   Row A (z=-8):  4 buildings   — deep back row
- *   Row B (z=-3):  3 buildings   — mid-back
- *   Row C (z=+2):  3 buildings   — mid-front
- *   Row D (z=+7):  3 buildings   — front row
- */
-
 export type ProjectStat = { label: string; value: string };
 
 export type ProjectLandmark = {
   id: string;
   title: string;
   summary: string;
+  description: string; // longer English paragraph for detail page
   url: string;
   location: string;
   year: string;
@@ -34,12 +21,12 @@ export type ProjectLandmark = {
 };
 
 export const PROJECT_LANDMARKS: ProjectLandmark[] = [
-  // ── Row A  (z = -8, deepest back row) ──────────────────────────────
+  // ── Row A  (z = -8) ────────────────────────────────────────────────
   {
     id: "admin-brotherfit",
     title: "Admin BrotherFit",
-    summary:
-      "BrotherFit ফিটনেস প্ল্যাটফর্মের অ্যাডমিন ড্যাশবোর্ড। ইউজার ম্যানেজমেন্ট, কন্টেন্ট মডারেশন এবং analytics সব এক জায়গায়।",
+    summary: "Full admin dashboard for the BrotherFit fitness platform — user management, content moderation, and real-time analytics in one place.",
+    description: "The BrotherFit Admin Panel provides complete control over the fitness platform ecosystem. Built with Next.js and Firebase, it features role-based access, real-time user metrics, content review workflows, and a moderation queue for community posts. Admins can manage memberships, push announcements, and export usage reports with a single click.",
     url: "https://admin-brotherfit.vercel.app",
     location: "Bangladesh",
     year: "2026",
@@ -57,8 +44,8 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "brotherfit",
     title: "BrotherFit",
-    summary:
-      "বাংলাদেশের ফিটনেস কমিউনিটির জন্য একটি সামাজিক প্ল্যাটফর্ম। ওয়ার্কআউট ট্র্যাকিং, ডায়েট প্ল্যান এবং কমিউনিটি চ্যালেঞ্জ।",
+    summary: "A fitness social platform for the Bangladeshi community — workout tracking, diet plans, and community challenges all in one app.",
+    description: "BrotherFit is a social fitness platform designed specifically for the Bangladeshi community. Users can log workouts, follow personalized diet plans, join weekly challenges, and track progress on public leaderboards. The platform encourages consistency through gamified streaks, peer accountability features, and a community feed where members share milestones.",
     url: "https://brotherfit.vercel.app",
     location: "Bangladesh",
     year: "2026",
@@ -76,8 +63,8 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "ummahnet",
     title: "UmmahNet",
-    summary:
-      "মুসলিম কমিউনিটির জন্য একটি সামাজিক নেটওয়ার্ক। ইসলামিক কন্টেন্ট শেয়ারিং, হালাল ইভেন্ট ম্যানেজমেন্ট এবং দাওয়াহ প্ল্যাটফর্ম।",
+    summary: "A social network built for the Muslim community — Islamic content sharing, halal event management, and a dawah platform.",
+    description: "UmmahNet is a purpose-built social platform connecting Muslims across Bangladesh and beyond. It supports Islamic content sharing with community review, a halal event calendar, mosque finder, and a dawah section for educational resources. The platform is designed with Islamic values at its core, offering a safe space for meaningful connection and knowledge exchange.",
     url: "https://ummahnet.vercel.app",
     location: "Bangladesh",
     year: "2026",
@@ -95,8 +82,8 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "enginex-archdrawing",
     title: "Enginex Arch Drawing",
-    summary:
-      "ব্রাউজারে সরাসরি আর্কিটেকচারাল ড্রয়িং তৈরির টুল। BNBC অনুযায়ী ফ্লোর প্ল্যান, এলিভেশন এবং সেকশন ড্রয়িং করা যায়। PDF/SVG এক্সপোর্ট সাপোর্ট।",
+    summary: "Browser-based architectural drafting tool — create BNBC-compliant floor plans, elevations, and section drawings with PDF/SVG export.",
+    description: "Enginex Arch Drawing brings professional CAD capabilities directly to the browser, eliminating the need for expensive desktop software. Engineers and architects can draft floor plans, elevations, and cross-sections following BNBC guidelines. The tool supports multi-layer drawings, dimension annotations, and one-click export to PDF or SVG. Designed for Bangladeshi building standards from the ground up.",
     url: "https://enginex-archdrawing.vercel.app",
     location: "Bangladesh",
     year: "2025",
@@ -112,12 +99,12 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
     cameraLookAt: [9, 4.0, -8],
   },
 
-  // ── Row B  (z = -3, mid-back) ───────────────────────────────────────
+  // ── Row B  (z = -3) ────────────────────────────────────────────────
   {
     id: "civion",
     title: "CIVION",
-    summary:
-      "তুমি এখন যেখানে আছো — এটি আমার 3D পোর্টফোলিও সাইট। Three.js দিয়ে তৈরি একটি interactive city যেখানে প্রতিটি বিল্ডিং একটি প্রজেক্ট।",
+    summary: "You are here — a 3D interactive portfolio where every building is a real project, built with Three.js and Next.js.",
+    description: "CIVION is this very site — a cinematic 3D portfolio built with Three.js, React Three Fiber, and Next.js. The entire portfolio lives inside a wireframe city: each building represents a real deployed project. Scroll to tour the city, click any building to enter it. The camera rig, lighting, and scroll system were hand-crafted to create a seamless fly-through experience on both desktop and mobile.",
     url: "https://mrcivion.vercel.app",
     location: "Bangladesh",
     year: "2026",
@@ -135,12 +122,12 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "enginex-hub",
     title: "Enginex Hub",
-    summary:
-      "CivilOS ইকোসিস্টেমের কেন্দ্রীয় ড্যাশবোর্ড। সব engineering টুলের gateway — auth, user profile, project history এবং নেভিগেশন এক জায়গায়।",
+    summary: "The central gateway for the CivilOS ecosystem — authentication, user profiles, project history, and navigation to all engineering tools.",
+    description: "Enginex Hub is the unified entry point for the entire CivilOS engineering platform. It handles Firebase authentication, stores user profiles and preferences, maintains a history of all calculations and drawings, and provides navigation to every tool in the ecosystem. Think of it as the control room — a single sign-in gives access to structural design, estimating, drawing, project management, and reporting.",
     url: "https://enginex-hub.vercel.app",
     location: "Bangladesh",
     year: "2024",
-    tag: "Ecosystem Data Backbone",
+    tag: "Ecosystem Gateway",
     stats: [
       { label: "Role", value: "Gateway" },
       { label: "Backend", value: "Firebase" },
@@ -154,12 +141,12 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "enginex-structural",
     title: "Enginex Structural",
-    summary:
-      "BNBC 2020 ও ACI 318-19 মেনে পুরো structural design করার টুল। Beam, Column, Slab, Footing, Shear Wall — সব মডিউল আছে। DXF export ও seismic analysis সহ।",
+    summary: "End-to-end structural design tool compliant with BNBC 2020 and ACI 318-19 — beams, columns, slabs, footings, shear walls, seismic analysis, and DXF export.",
+    description: "Enginex Structural is a comprehensive structural engineering design suite built for Bangladeshi practice. It covers the full design workflow: beam and column design per ACI 318-19, slab and flat-plate analysis, isolated and raft footing design, shear wall and retaining wall checks, all verified against BNBC 2020 load combinations. Advanced features include a 3D space frame solver with P-Delta effects, seismic response analysis, BBS generation, and DXF export for AutoCAD.",
     url: "https://enginex-structural.vercel.app",
     location: "Bangladesh",
     year: "2025",
-    tag: "Structural Engineering End-to-End",
+    tag: "Structural Engineering Suite",
     stats: [
       { label: "Modules", value: "20+" },
       { label: "Compliance", value: "BNBC 2020" },
@@ -171,19 +158,19 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
     cameraLookAt: [6, 5.0, -3],
   },
 
-  // ── Row C  (z = +2, mid-front) ──────────────────────────────────────
+  // ── Row C  (z = +2) ────────────────────────────────────────────────
   {
     id: "enginex-learning",
     title: "Enginex Learning",
-    summary:
-      "বাংলা ভাষায় civil engineering শেখার প্ল্যাটফর্ম। MCQ, Viva, Flashcard মোড সহ BNBC সিলেবাস ভিত্তিক কোর্স। পরীক্ষার প্রস্তুতির জন্য আদর্শ।",
+    summary: "Civil engineering learning platform with MCQ, Viva, and Flashcard modes — BNBC syllabus-aligned, ideal for exam preparation.",
+    description: "Enginex Learning makes civil engineering education accessible and engaging. The platform offers three study modes: multiple-choice quizzes with instant feedback, viva-style question sessions to test recall, and spaced-repetition flashcards for long-term retention. All content is aligned with the BNBC syllabus and covers core topics including soil mechanics, structural analysis, materials science, and construction management.",
     url: "https://enginex-learning.vercel.app",
     location: "Bangladesh",
     year: "2024",
-    tag: "Bengali Civil Eng. Learning",
+    tag: "Civil Engineering E-Learning",
     stats: [
-      { label: "Modes", value: "MCQ/Viva/Flash" },
-      { label: "Language", value: "Bengali" },
+      { label: "Modes", value: "MCQ / Viva / Flash" },
+      { label: "Syllabus", value: "BNBC" },
       { label: "Status", value: "Live" },
     ],
     position: [-7, 0, 2],
@@ -194,15 +181,15 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "enginex-projectmgmt",
     title: "Enginex Project Mgmt",
-    summary:
-      "বাংলাদেশের construction প্রজেক্টের জন্য project management সফটওয়্যার। Gantt chart, progress tracking, team coordination এবং RAJUK/CDA compliance।",
+    summary: "Construction project management software for Bangladesh — Gantt charts, progress tracking, team coordination, and RAJUK/CDA compliance.",
+    description: "Enginex Project Management is purpose-built for the Bangladeshi construction industry. Project managers can build Gantt charts, assign tasks to site teams, track daily progress with photo uploads, and generate progress reports for clients. The system maintains a compliance checklist aligned with RAJUK and CDA approval requirements, helping teams stay audit-ready throughout the construction lifecycle.",
     url: "https://enginex-projectmgmt.vercel.app",
     location: "Bangladesh",
     year: "2024",
-    tag: "Construction PM Tool",
+    tag: "Construction PM Software",
     stats: [
       { label: "Type", value: "PM Software" },
-      { label: "Standard", value: "RAJUK/CDA" },
+      { label: "Standard", value: "RAJUK / CDA" },
       { label: "Status", value: "Live" },
     ],
     position: [0, 0, 2],
@@ -213,14 +200,14 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "enginex-estimate",
     title: "Enginex Estimate",
-    summary:
-      "বাংলাদেশের construction বাজার মূল্য অনুযায়ী automated cost estimation। রড, সিমেন্ট, ইট সহ সব material-এর BOQ তৈরি করে এবং report export করে।",
+    summary: "Automated cost estimation using real Bangladeshi market prices — generates full BOQ for rebar, cement, bricks, and all construction materials with PDF/Excel export.",
+    description: "Enginex Estimate eliminates manual BOQ preparation by automating cost calculation based on live Bangladeshi construction material prices. Engineers input structural dimensions; the system references a curated database of local material rates (rebar brands, cement grades, brick types, sand, aggregate) and generates a detailed Bill of Quantities. Outputs can be exported as PDF for client submission or Excel for further customization.",
     url: "https://enginex-estimate.vercel.app",
     location: "Bangladesh",
     year: "2024",
     tag: "Construction Cost Estimator",
     stats: [
-      { label: "Materials", value: "Local BD" },
+      { label: "Materials", value: "Local BD Rates" },
       { label: "Export", value: "PDF / Excel" },
       { label: "Status", value: "Live" },
     ],
@@ -230,19 +217,19 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
     cameraLookAt: [7, 4.0, 2],
   },
 
-  // ── Row D  (z = +7, front row) ──────────────────────────────────────
+  // ── Row D  (z = +7) ────────────────────────────────────────────────
   {
     id: "build-enginex",
     title: "Build Enginex",
-    summary:
-      "বাংলাদেশের construction materials-এর অনলাইন মার্কেটপ্লেস। রড, সিমেন্ট, বালি থেকে শুরু করে সব building material। bKash ও SSLCommerz payment সাপোর্ট।",
+    summary: "Online marketplace for Bangladeshi construction materials — rebar, cement, sand, and more, with bKash and SSLCommerz payment support.",
+    description: "Build Enginex is a construction materials e-commerce platform tailored for Bangladesh. Suppliers list products — rebar bundles, cement bags, bricks, sand, aggregate, tiles — and contractors can order directly with quantity discounts. The platform integrates bKash for mobile payments and SSLCommerz for card payments, with delivery tracking and invoice generation built in.",
     url: "https://build-enginex.vercel.app",
     location: "Bangladesh",
     year: "2024",
     tag: "Construction E-Commerce BD",
     stats: [
       { label: "Type", value: "E-Commerce" },
-      { label: "Payments", value: "bKash / SSL" },
+      { label: "Payments", value: "bKash / SSLCommerz" },
       { label: "Status", value: "Live" },
     ],
     position: [-7, 0, 7],
@@ -253,8 +240,8 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "enginex-reports",
     title: "Enginex Reports",
-    summary:
-      "Engineering calculation এর professional PDF রিপোর্ট তৈরির টুল। Structural, estimate, এবং BOQ রিপোর্ট BNBC compliant ফরম্যাটে auto-generate করে।",
+    summary: "Professional engineering report generator — auto-produces BNBC-compliant structural, estimate, and BOQ reports as polished PDFs.",
+    description: "Enginex Reports transforms raw engineering calculations into professional client-ready documents. Connected to the structural, estimate, and drawing modules, it pulls calculation data and formats it into BNBC-compliant report templates — complete with cover page, project details, calculation sheets, result summaries, and engineer's signature block. Reports are generated as high-quality PDFs ready for submission to RAJUK or client handover.",
     url: "https://enginex-reports.vercel.app",
     location: "Bangladesh",
     year: "2024",
@@ -272,8 +259,8 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "brotherfit-universe",
     title: "BrotherFit Universe",
-    summary:
-      "BrotherFit এর বিস্তারিত ecosystem — fitness challenges, leaderboards, এবং community events। গেমিফিকেশন দিয়ে ব্যায়ামকে আনন্দদায়ক করে তোলে।",
+    summary: "The extended BrotherFit ecosystem — fitness challenges, global leaderboards, and community events with gamification to make exercise enjoyable.",
+    description: "BrotherFit Universe expands the core fitness app into a full gamified ecosystem. Users compete in weekly and monthly fitness challenges, climb global and regional leaderboards, unlock achievement badges, and participate in community events organized by local gyms and fitness coaches. The gamification layer — streaks, XP points, and rank tiers — is designed to sustain long-term motivation and build a lasting fitness habit.",
     url: "https://brotherfituniverse.vercel.app",
     location: "Bangladesh",
     year: "2026",
@@ -290,8 +277,6 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   },
 ];
 
-/** A small exclusion radius around each landmark so procedural buildings
- *  don't spawn on top of a landmark's position. */
 export const LANDMARK_EXCLUSION_RADIUS = 1.8;
 
 export function isNearLandmark(x: number, z: number): boolean {
