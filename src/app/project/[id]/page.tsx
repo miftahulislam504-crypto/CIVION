@@ -38,78 +38,75 @@ export default async function ProjectPage({
       className="min-h-screen text-soft-white flex flex-col"
       style={{ background: "#0a0a0b" }}
     >
-      {/* Background grid */}
+      {/* Subtle background grid */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-25"
+        className="fixed inset-0 pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(45,226,230,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(45,226,230,0.07) 1px, transparent 1px)",
+            "linear-gradient(rgba(45,226,230,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(45,226,230,0.05) 1px, transparent 1px)",
           backgroundSize: "36px 36px",
+          opacity: 0.5,
         }}
       />
 
       {/* ── Top bar ── */}
       <header
-        className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 py-5"
-        style={{ borderBottom: "1px solid rgba(45,226,230,0.08)", background: "rgba(10,10,11,0.85)", backdropFilter: "blur(12px)" }}
+        className="sticky top-0 z-50 flex items-center justify-between px-5 py-4"
+        style={{
+          borderBottom: "1px solid rgba(45,226,230,0.1)",
+          background: "rgba(10,10,11,0.92)",
+          backdropFilter: "blur(12px)",
+        }}
       >
         <Link
           href="/"
-          className="font-mono text-[11px] tracking-[0.2em] uppercase text-soft-white/40 hover:text-neon-cyan transition-colors"
+          className="font-mono text-[11px] tracking-[0.18em] uppercase text-soft-white/40 hover:text-neon-cyan transition-colors"
         >
           ‹ Back
         </Link>
-
-        <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/30">
+        <span className="font-mono text-[10px] tracking-[0.18em] uppercase text-neon-cyan/30">
           CIVION
         </span>
-
-        <span className="font-mono text-[10px] tracking-[0.15em] text-soft-white/25">
+        <span className="font-mono text-[10px] text-soft-white/20">
           {String(idx + 1).padStart(2, "0")} / {String(PROJECT_LANDMARKS.length).padStart(2, "0")}
         </span>
       </header>
 
-      {/* ── Hero block ── */}
-      <section className="relative pt-28 pb-12 px-6 border-b" style={{ borderColor: "rgba(45,226,230,0.08)" }}>
-        {/* Glow */}
-        <div
-          className="absolute top-0 left-0 w-64 h-64 pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(45,226,230,0.04) 0%, transparent 70%)" }}
-        />
-
-        <div className="relative max-w-lg">
-          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/50 mb-4">
-            PORTFOLIO_CO_{String(idx + 1).padStart(2, "0")}
-          </p>
-
-          <h1 className="font-mono text-4xl sm:text-5xl font-bold leading-none mb-3 text-soft-white">
-            {project.title}
-          </h1>
-
-          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/40 mb-6">
-            {project.tag}
-          </p>
-
-          <div className="w-8 h-px mb-6" style={{ background: "rgba(45,226,230,0.35)" }} />
-
-          <p className="font-mono text-xs text-soft-white/55 leading-relaxed">
-            {project.location} &mdash; {project.year}
-          </p>
-        </div>
+      {/* ── Hero ── */}
+      <section
+        className="relative px-5 pt-8 pb-7"
+        style={{ borderBottom: "1px solid rgba(45,226,230,0.08)" }}
+      >
+        <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-neon-cyan/50 mb-2">
+          PORTFOLIO_CO_{String(idx + 1).padStart(2, "0")}
+        </p>
+        <h1 className="font-mono text-4xl font-bold leading-none mb-2 text-soft-white">
+          {project.title}
+        </h1>
+        <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-neon-cyan/40 mb-4">
+          {project.tag}
+        </p>
+        <div className="w-7 h-px mb-4" style={{ background: "rgba(45,226,230,0.3)" }} />
+        <p className="font-mono text-[11px] text-soft-white/40">
+          {project.location} &mdash; {project.year}
+        </p>
       </section>
 
-      {/* ── Main content ── */}
-      <main className="flex-1 px-6 py-12 max-w-lg w-full">
+      {/* ── Content ── */}
+      <main className="flex-1 px-5">
 
-        {/* Stats */}
-        <div className="mb-12">
-          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/40 mb-5">
+        {/* Data */}
+        <div
+          className="py-6"
+          style={{ borderBottom: "1px solid rgba(45,226,230,0.08)" }}
+        >
+          <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-neon-cyan/40 mb-4">
             /////// Data
           </p>
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-4">
             {project.stats.map((stat) => (
               <div key={stat.label}>
-                <p className="font-mono text-[9px] tracking-[0.15em] uppercase text-soft-white/30 mb-1">
+                <p className="font-mono text-[9px] tracking-[0.12em] uppercase text-soft-white/25 mb-1">
                   {stat.label}
                 </p>
                 <p className="font-mono text-sm text-neon-cyan font-bold">
@@ -121,51 +118,56 @@ export default async function ProjectPage({
         </div>
 
         {/* Summary */}
-        <div className="mb-10" style={{ borderTop: "1px solid rgba(45,226,230,0.08)", paddingTop: "2.5rem" }}>
-          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/40 mb-5">
+        <div
+          className="py-6"
+          style={{ borderBottom: "1px solid rgba(45,226,230,0.08)" }}
+        >
+          <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-neon-cyan/40 mb-3">
             /////// Summary
           </p>
-          <p className="font-mono text-sm text-soft-white/70 leading-relaxed">
+          <p className="font-mono text-sm text-soft-white/65 leading-relaxed">
             {project.summary}
           </p>
         </div>
 
-        {/* Description */}
-        <div className="mb-12" style={{ borderTop: "1px solid rgba(45,226,230,0.08)", paddingTop: "2.5rem" }}>
-          <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-neon-cyan/40 mb-5">
+        {/* About */}
+        <div
+          className="py-6"
+          style={{ borderBottom: "1px solid rgba(45,226,230,0.08)" }}
+        >
+          <p className="font-mono text-[10px] tracking-[0.18em] uppercase text-neon-cyan/40 mb-3">
             /////// About
           </p>
-          <p className="font-mono text-sm text-soft-white/60 leading-relaxed">
+          <p className="font-mono text-sm text-soft-white/55 leading-relaxed">
             {project.description}
           </p>
         </div>
 
         {/* Visit CTA */}
-        <a
-          href={project.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 font-mono text-[11px] tracking-[0.2em] uppercase text-neon-cyan hover:text-soft-white transition-colors mb-16"
-        >
-          <span
-            className="inline-block w-1.5 h-1.5 rounded-full"
-            style={{ background: "#2de2e6", boxShadow: "0 0 6px rgba(45,226,230,0.8)" }}
-          />
-          D {project.year.slice(2)}.01.01 &nbsp; Visit Live Site →
-        </a>
+        <div className="py-6" style={{ borderBottom: "1px solid rgba(45,226,230,0.08)" }}>
+          <a
+            href={project.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.18em] uppercase text-neon-cyan hover:text-soft-white transition-colors"
+          >
+            <span
+              className="inline-block w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: "#2de2e6", boxShadow: "0 0 5px rgba(45,226,230,0.7)" }}
+            />
+            Visit Live Site →
+          </a>
+        </div>
 
         {/* Prev / Next */}
-        <div
-          className="grid grid-cols-2 gap-4 pt-8"
-          style={{ borderTop: "1px solid rgba(45,226,230,0.08)" }}
-        >
+        <div className="grid grid-cols-2 gap-4 py-6">
           <div>
             {prev && (
               <Link href={`/project/${prev.id}`} className="group block">
-                <p className="font-mono text-[9px] tracking-[0.15em] uppercase text-soft-white/25 mb-1">
-                  ‹ Prev
+                <p className="font-mono text-[9px] tracking-[0.12em] uppercase text-soft-white/20 mb-1">
+                  ‹ Previous
                 </p>
-                <p className="font-mono text-xs text-soft-white/50 group-hover:text-neon-cyan transition-colors">
+                <p className="font-mono text-xs text-soft-white/45 group-hover:text-neon-cyan transition-colors">
                   {prev.title}
                 </p>
               </Link>
@@ -174,10 +176,10 @@ export default async function ProjectPage({
           <div className="text-right">
             {next && (
               <Link href={`/project/${next.id}`} className="group block">
-                <p className="font-mono text-[9px] tracking-[0.15em] uppercase text-soft-white/25 mb-1">
+                <p className="font-mono text-[9px] tracking-[0.12em] uppercase text-soft-white/20 mb-1">
                   Next ›
                 </p>
-                <p className="font-mono text-xs text-soft-white/50 group-hover:text-neon-cyan transition-colors">
+                <p className="font-mono text-xs text-soft-white/45 group-hover:text-neon-cyan transition-colors">
                   {next.title}
                 </p>
               </Link>
@@ -188,11 +190,11 @@ export default async function ProjectPage({
 
       {/* ── Footer ── */}
       <footer
-        className="px-6 py-5"
-        style={{ borderTop: "1px solid rgba(45,226,230,0.08)" }}
+        className="px-5 py-4"
+        style={{ borderTop: "1px solid rgba(45,226,230,0.06)" }}
       >
-        <p className="font-mono text-[9px] tracking-[0.2em] uppercase text-soft-white/20">
-          // CIVION &mdash; Copyright &copy; {new Date().getFullYear()}. All Rights Reserved.
+        <p className="font-mono text-[9px] tracking-[0.15em] uppercase text-soft-white/15">
+          // CIVION &mdash; Copyright &copy; {new Date().getFullYear()}
         </p>
       </footer>
     </div>
