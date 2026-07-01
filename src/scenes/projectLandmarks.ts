@@ -54,8 +54,8 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
   {
     id: "brotherfit",
     title: "BrotherFit",
-    summary: "A fitness social platform for the Bangladeshi community — workout tracking, diet plans, and community challenges all in one app.",
-    description: "BrotherFit is a social fitness platform designed specifically for the Bangladeshi community. Users can log workouts, follow personalized diet plans, join weekly challenges, and track progress on public leaderboards. The platform encourages consistency through gamified streaks, peer accountability features, and a community feed where members share milestones.",
+    summary: "BrotherFit is a modern clothing brand and e-commerce platform focused on stylish, comfortable, and high-quality fashion for everyday wear. We create trendy and premium apparel designed for people who value confidence, comfort, and individuality",
+    description: "At BrotherFit, fashion is more than clothing — it’s a lifestyle. Our collections combine modern design, quality materials, and affordable pricing to deliver the perfect balance of style and comfort. From casual wear to streetwear-inspired fashion, we aim to provide outfits that fit every personality and occasion.Our mission is to make online shopping simple, reliable, and enjoyable by offering fashionable products, smooth customer experience, and trusted service. BrotherFit is committed to helping you look good, feel confident, and express your style with ease.",
     url: "https://brotherfit.vercel.app",
     location: "Bangladesh",
     year: "2026",
@@ -180,11 +180,11 @@ export const PROJECT_LANDMARKS: ProjectLandmark[] = [
 
   // 7
   {
-    id: "mathematical-univerces",
-    title: "Mathematical Univerces",
+    id: "mathxuniverse",
+    title: "mathxuniverse",
     summary: "An interactive mathematics learning universe — visual explanations, problem sets, and concept maps for students exploring higher mathematics.",
     description: "Mathematical Univerces reimagines how mathematics is taught by making abstract concepts visual and explorable. The platform organizes math topics as a navigable universe of interconnected concepts — algebra, calculus, geometry, statistics — each with visual explanations, worked examples, and practice problem sets. Designed to build genuine mathematical intuition rather than just rote formula memorization.",
-    url: "https://mathematical-univerces.vercel.app",
+    url: "https://mathxuniverse.vercel.app",
     location: "Bangladesh",
     year: "2025",
     tag: "Mathematics Education",
