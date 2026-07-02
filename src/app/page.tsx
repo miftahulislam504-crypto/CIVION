@@ -2,11 +2,13 @@ import HeroText from "@/components/HeroText";
 import SmartCitySection from "@/components/SmartCitySection";
 import ProjectTourSection from "@/components/ProjectTourSection";
 import FinalCinematicSection from "@/components/FinalCinematicSection";
-import ContactHelmet from "@/components/ContactHelmet";
+import ProfileCard from "@/components/ProfileCard";
+import InfiniteScrollLoop from "@/components/InfiniteScrollLoop";
 
 export default function Home() {
   return (
     <main>
+      <InfiniteScrollLoop />
       <section
         id="hero"
         className="h-[200vh] flex items-start justify-center pt-[28vh]"
@@ -31,7 +33,7 @@ export default function Home() {
           </h2>
           <div className="w-8 h-px mt-4" style={{ background: "rgba(45,226,230,0.35)" }} />
         </div>
-        <ContactHelmet />
+        <ProfileCard />
       </section>
     </main>
   );

@@ -53,6 +53,10 @@ body {
   animation: civion-spin 1.8s linear infinite;
 }
 
+.animate-civion-spin-slow {
+  animation: civion-spin 14s linear infinite;
+}
+
 @keyframes civion-wave {
   0%,
   100% {

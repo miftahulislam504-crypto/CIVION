@@ -6,6 +6,15 @@ import { useIntroState } from "@/hooks/useIntroState";
 
 const REVEAL_DELAY = 0.5;
 
+// Module-level (not component state) on purpose: this needs to survive
+// HeroText unmounting/remounting as the user navigates "/" -> a project
+// detail page -> "/" again. Without this, introDone is already true by
+// the time you come back (IntroProvider lives in the root layout and
+// never resets it), so the reveal effect would fire again on every
+// remount and replay the whole staged text animation from scratch —
+// looking like the hero "flashes" back to its intro state on Back.
+let heroRevealPlayed = false;
+
 export default function HeroText() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const lineRefs = useRef<(HTMLElement | null)[]>([]);
@@ -14,11 +23,37 @@ export default function HeroText() {
   useEffect(() => {
     if (!introDone || !wrapperRef.current) return;
     const wrapper = wrapperRef.current;
+
+    // Already played once this session — jump straight to the settled
+    // "revealed" state instead of animating in again.
+    if (heroRevealPlayed) {
+      gsap.set(wrapper, { opacity: 1 });
+      lineRefs.current.forEach((el) => {
+        if (el) gsap.set(el, { opacity: 1, y: 0 });
+      });
+      const exitTween = gsap.to(wrapper, {
+        opacity: 0,
+        y: -40,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "top top",
+          end: "35% top",
+          scrub: true,
+        },
+      });
+      return () => {
+        exitTween.scrollTrigger?.kill();
+        exitTween.kill();
+      };
+    }
+
     let exitTween: gsap.core.Tween | undefined;
 
     const tl = gsap.timeline({
       delay: REVEAL_DELAY,
       onComplete: () => {
+        heroRevealPlayed = true;
         exitTween = gsap.to(wrapper, {
           opacity: 0,
           y: -40,
